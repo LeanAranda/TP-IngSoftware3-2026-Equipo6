@@ -1,0 +1,6 @@
+
+emoji==2.15.0
+fastapi==0.119.0
+pandas==3.0.2
+python-multipart==0.0.20
+uvicorn==0.37.0
