@@ -1,5 +1,7 @@
 import re
 
+import pandas as pd
+
 
 # Regex que detecta el formato estándar de Android
 PATRON_ANDROID = r'^(\d{1,2}/\d{1,2}/\d{2,4}),?\s(\d{1,2}:\d{2})\s-\s([^:]+):\s(.*)$'
@@ -13,10 +15,10 @@ PATRON_ES_FECHA = r'^\[?\d{1,2}/\d{1,2}/\d{2,4}'
 
 def parsear_chat_desde_lineas(lineas_chat):
     """
-    TAREA Cronograma : [1.2.2] Implementacion de Regex (Android vs ios)
+    TAREA Cronograma : [1.2.4] Exportación de datos
 
-    Recibe una lista de lineas extraidas del txt y devuelve una lista
-    de diccionarios con las claves Fecha, Hora, Usuario y Mensaje.
+    Recibe una lista de lineas extraidas del txt y devuelve un DataFrame
+    con las columnas Fecha, Hora, Usuario y Mensaje.
     """
 
     datos_parseados = [] # Lista para guardar los mensajes estructurados
@@ -65,4 +67,5 @@ def parsear_chat_desde_lineas(lineas_chat):
                 # Si no empieza con fecha, se asume que es una continuacion del mensaje anterior.
                 mensaje_actual['Mensaje'] += f" {linea_texto}"
 
-    return datos_parseados
+    df_chat = pd.DataFrame(datos_parseados)
+    return df_chat
