@@ -56,5 +56,13 @@ def parsear_chat_desde_lineas(lineas_chat):
                 'Mensaje': texto,
             }
             datos_parseados.append(mensaje_actual)
+        else:
+            # Si empieza con fecha pero no coincide con los patrones anteriores,
+            # se trata de un mensaje del sistema o una linea que no queremos sumar.
+            if re.match(PATRON_ES_FECHA, linea_texto):
+                pass # Ignoramos lineas de sistema como "Alice agregó a Bob"
+            elif mensaje_actual and linea_texto:
+                # Si no empieza con fecha, se asume que es una continuacion del mensaje anterior.
+                mensaje_actual['Mensaje'] += f" {linea_texto}"
 
     return datos_parseados

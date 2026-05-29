@@ -7,7 +7,7 @@ import unittest
 from backend.main import procesar_chat_desde_zip
 
 class TestMainProcesarChatDesdeZip(unittest.TestCase):
-    def test_main_devuelve_lista_si_hay_txt(self):
+    def test_main_parsea_zip_con_txt_y_concatenacion(self):
         # Armamos un ZIP valido para confirmar que main orquesta reader y parser.
         memoria = io.BytesIO()
         with zipfile.ZipFile(memoria, mode="w") as z:
@@ -22,8 +22,8 @@ class TestMainProcesarChatDesdeZip(unittest.TestCase):
         self.assertEqual(resultado[0]['Fecha'], '12/05/2021')
         self.assertEqual(resultado[0]['Hora'], '15:30')
         self.assertEqual(resultado[0]['Usuario'], 'Alice')
-        # La continuación se ignora en la versión actual de parser.py
-        self.assertEqual(resultado[0]['Mensaje'], 'Hola')
+        # La continuación se concatena al mensaje anterior.
+        self.assertEqual(resultado[0]['Mensaje'], 'Hola Esto es una continuacion')
 
     def test_main_lanza_error_si_falta_txt(self):
         # Armamos un ZIP sin .txt para validar el manejo de error en main

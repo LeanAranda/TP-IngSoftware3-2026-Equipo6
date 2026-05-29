@@ -4,11 +4,10 @@ from backend.parser import parsear_chat_desde_lineas
 
 
 class TestParserChatDesdeLineas(unittest.TestCase):
-    def test_parsea_formato_android_sin_concatenar_continuacion(self):
+    def test_parsea_formato_android_con_concatenacion(self):
         # Preparamos lineas que simulan un chat exportado desde Android
         # En la versión actual de parser.py las líneas de continuación
-        # no se concatenan al mensaje anterior, por lo que deben
-        # ser ignoradas.
+        # se concatenan al mensaje anterior.
         lineas = [
             "12/05/2021, 15:30 - Alice: Hola",
             "Esto es una continuacion",
@@ -22,8 +21,8 @@ class TestParserChatDesdeLineas(unittest.TestCase):
         self.assertEqual(resultado[0]['Fecha'], '12/05/2021')
         self.assertEqual(resultado[0]['Hora'], '15:30')
         self.assertEqual(resultado[0]['Usuario'], 'Alice')
-        # La continuación se ignora en la versión actual de parser.py
-        self.assertEqual(resultado[0]['Mensaje'], 'Hola')
+        # La continuación se concatena al mensaje anterior.
+        self.assertEqual(resultado[0]['Mensaje'], 'Hola Esto es una continuacion')
         self.assertEqual(resultado[1]['Usuario'], 'Bob')
 
     def test_parsea_formato_ios(self):
