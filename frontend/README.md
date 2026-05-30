@@ -9,6 +9,11 @@ La interfaz fue estilizada siguiendo la identidad visual y paleta de colores car
 1.  Asegúrate de tener el backend de FastAPI corriendo en su respectivo puerto (ej: `http://localhost:8000`).
 2.  Verifica que el archivo `vite.config.js` tenga configurado el proxy apuntando a la dirección local de tu backend para resolver las rutas `/api/*`.
 3.  Inicia el servidor de desarrollo del frontend:
+3. Instala las dependencias necesarias del proyecto ejecutando:
+   ```bash
+   npm install
+   ```
+   Inicia el servidor de desarrollo del frontend:
     ```bash
     npm run dev
     ```
