@@ -1,16 +1,16 @@
-# React + Vite
+# 📊 Frontend - Componente de Carga y Procesamiento de Chats
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este sector del frontend contiene la interfaz modular diseñada para la carga, validación y envío de archivos de historial de chat de WhatsApp (`.zip`) hacia el backend desarrollado en FastAPI.
 
-Currently, two official plugins are available:
+La interfaz fue estilizada siguiendo la identidad visual y paleta de colores característica de **WhatsApp Web**, ofreciendo una experiencia de usuario limpia, intuitiva y responsiva.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 💻 Cómo Probar esta Funcionalidad
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  Asegúrate de tener el backend de FastAPI corriendo en su respectivo puerto (ej: `http://localhost:8000`).
+2.  Verifica que el archivo `vite.config.js` tenga configurado el proxy apuntando a la dirección local de tu backend para resolver las rutas `/api/*`.
+3.  Inicia el servidor de desarrollo del frontend:
+    ```bash
+    npm run dev
+    ```
+4.  Selecciona un archivo `.zip` que contenga un chat exportado de WhatsApp (Android o iOS) y presiona **"Subir ZIP"**. 
+5.  Al finalizar el análisis, el componente mostrará un mensaje de éxito indicando que el estado `result` ya contiene el JSON estructurado con métricas (usuarios top, emojis, franjas horarias y nube de palabras), quedando listo para la fase de graficación.
