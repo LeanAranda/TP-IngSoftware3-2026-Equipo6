@@ -13,4 +13,5 @@ La interfaz fue estilizada siguiendo la identidad visual y paleta de colores car
     npm run dev
     ```
 4.  Selecciona un archivo `.zip` que contenga un chat exportado de WhatsApp (Android o iOS) y presiona **"Subir ZIP"**. 
-5.  Al finalizar el análisis, el componente mostrará un mensaje de éxito indicando que el estado `result` ya contiene el JSON estructurado con métricas (usuarios top, emojis, franjas horarias y nube de palabras), quedando listo para la fase de graficación.
+5.  5. Abre tu navegador en la dirección local del frontend: `http://localhost:5173`.
+Al finalizar el análisis, el componente mostrará un mensaje de éxito indicando que el estado `result` ya contiene el JSON estructurado con métricas (usuarios top, emojis, franjas horarias y nube de palabras), quedando listo para la fase de graficación.
