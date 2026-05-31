@@ -1,69 +1,105 @@
+/* =========================================
+  VARIABLES GLOBALES (PALETA WHATSAPP Y UI)
+   ========================================= */
+:root {
+  /* Colores */
+  --wa-verde-principal: #00a884;
+  --wa-verde-oscuro: #008f70;
+  --wa-verde-burbuja: #d9fdd3;
+  --wa-verde-texto: #25D366;
+  --wa-fondo: #efeae2;
+  
+  --texto-principal: #3b4a54;
+  --texto-secundario: #4b5563;
+  --texto-claro: #9ca3af;
+  --blanco: #ffffff;
+  
+  --borde-claro: #e5e7eb;
+  --borde-zona-carga: #b1b3b5;
+  --fondo-zona-carga: #f8f9fa;
+  --fondo-zona-hover: #f0fdfa;
+
+  /* Sombras y Bordes */
+  --sombra-tarjeta: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --sombra-contenedor: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --radio-tarjeta: 12px;
+}
+
+/* =========================================
+  ESTILOS GENERALES Y CONTENEDORES
+   ========================================= */
 .app-container {
-  background-color: #efeae2; /* Fondo clásico de chat de WhatsApp */
+  background-color: var(--wa-fondo);
   min-height: 100vh;
   padding: 3rem 1rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #3b4a54;
+  color: var(--texto-principal);
   display: flex;
   justify-content: center;
   align-items: flex-start;
 }
 
-.analyzer-card {
+.contenedor-principal {
   width: 100%;
   max-width: 550px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: var(--blanco);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-contenedor);
   overflow: hidden;
 }
 
-.wp-header {
-  background-color: #00a884; /* Verde WhatsApp principal */
-  color: #ffffff;
-  padding: 1.5rem 1rem; /* Reducimos un poco el padding vertical */
+/* =========================================
+   CABECERA
+   ========================================= */
+.cabecera-wa {
+  background-color: var(--wa-verde-principal);
+  color: var(--blanco);
+  padding: 1.5rem 1rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem; /* Controla el espacio exacto entre el título y el subtítulo */
+  gap: 0.25rem;
 }
 
-.wp-header h1 {
+.cabecera-wa h1 {
   margin: 0;
-  font-size: 1.5rem; /* Bajamos el tamaño para que entre cómodo */
+  font-size: 1.5rem;
   font-weight: 600;
-  line-height: 1.2; /* Evita que si el título se divide en dos renglones se encime */
-  max-width: 90%; /* Le da un margen para que no toque los bordes */
+  line-height: 1.2;
+  max-width: 90%;
 }
 
-.wp-header p {
+.cabecera-wa p {
   margin: 0;
   opacity: 0.9;
   font-size: 0.85rem;
   line-height: 1.4;
 }
 
-.form-body {
+/* =========================================
+  FORMULARIO DE CARGA
+   ========================================= */
+.cuerpo-formulario {
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.drop-zone {
-  border: 2px dashed #b1b3b5;
+.zona-carga {
+  border: 2px dashed var(--borde-zona-carga);
   border-radius: 8px;
   padding: 2rem 1rem;
   text-align: center;
-  background-color: #f8f9fa;
+  background-color: var(--fondo-zona-carga);
   transition: border-color 0.2s, background-color 0.2s;
 }
 
-.drop-zone:hover {
-  border-color: #00a884;
-  background-color: #f0fdfa;
+.zona-carga:hover {
+  border-color: var(--wa-verde-principal);
+  background-color: var(--fondo-zona-hover);
 }
 
 .file-icon {
@@ -74,16 +110,16 @@
 
 .file-label-text {
   font-weight: 500;
-  color: #00a884;
+  color: var(--wa-verde-principal);
   word-break: break-all;
 }
 
-.wp-btn {
-  background-color: #00a884;
-  color: #ffffff;
+.btn-wa {
+  background-color: var(--wa-verde-principal);
+  color: var(--blanco);
   border: none;
   padding: 0.85rem;
-  border-radius: 24px; /* Botón redondeado tipo WhatsApp */
+  border-radius: 24px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
@@ -91,26 +127,88 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.wp-btn:hover:not(:disabled) {
-  background-color: #008f70;
+.btn-wa:hover:not(:disabled) {
+  background-color: var(--wa-verde-oscuro);
 }
 
-.wp-btn:active:not(:disabled) {
+.btn-wa:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.wp-btn:disabled {
+.btn-wa:disabled {
   background-color: #94d7ca;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-.success-alert {
+.alerta-exito {
   margin-top: 1rem;
-  background-color: #d9fdd3; /* Verde de burbuja de WhatsApp */
-  border-left: 4px solid #00a884;
+  background-color: var(--wa-verde-burbuja);
+  border-left: 4px solid var(--wa-verde-principal);
   padding: 1rem;
   border-radius: 4px;
   font-size: 0.95rem;
   text-align: center;
+}
+
+/* =========================================
+  SISTEMA DE CUADRÍCULA Y TARJETAS GLOBALES
+   ========================================= */
+.grid-tablero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.tarjeta {
+  background-color: var(--blanco);
+  padding: 1.5rem;
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+  border: 1px solid var(--borde-claro);
+}
+
+.tarjeta-ancho-total {
+  grid-column: 1 / -1;
+}
+
+.tarjeta-titulo {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: var(--texto-principal);
+}
+
+/* =========================================
+  ELEMENTOS DE TEXTO Y ESTADOS
+   ========================================= */
+.texto-destacado {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--wa-verde-texto);
+  margin: 0;
+}
+
+.lista-datos {
+  padding-left: 1.5rem;
+  margin: 0;
+  color: var(--texto-secundario);
+}
+
+.lista-datos li {
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-grafico {
+  color: var(--texto-claro);
+  font-style: italic;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.flex-entre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
