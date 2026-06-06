@@ -1,4 +1,17 @@
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
 export default function TableroPrincipal({ datos, onReiniciar }) {
+
+    const usuariosData = Object.entries(datos.grafico_usuarios).map(([usuario, cantidad]) => ({
+        usuario,
+        cantidad
+    }));
+
+    const horariosData = Object.entries(datos.horarios).map(([franja, cantidad]) => ({
+        franja,
+        cantidad
+    }));
+
     return (
         <div className="tablero-container" style={{ marginTop: '2rem' }}>
 
@@ -37,22 +50,50 @@ export default function TableroPrincipal({ datos, onReiniciar }) {
                     </ul>
                 </div>
 
-                {/* 3. Placeholder: Top Emojis */}
+                {/* 3. Top Emojis*/}
                 <div className="tarjeta">
                     <h3 className="tarjeta-titulo">🔥 Top Emojis</h3>
-                    <p className="placeholder-grafico">[ Aquí irá la cuadrícula de emojis ]</p>
+                    <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={datos.emojis}>
+                            <XAxis dataKey="emoji" className="recharts-text" />
+                            <YAxis />
+                            <Tooltip />
+                            <Bar dataKey="cantidad" fill="#ff9800" />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
 
-                {/* 4. Placeholder: Gráfico de Usuarios */}
+                {/* 4. Gráfico de Usuarios */}
                 <div className="tarjeta">
                     <h3 className="tarjeta-titulo">📊 Mensajes por Usuario</h3>
-                    <p className="placeholder-grafico">[ Aquí irá el BarChart de Recharts ]</p>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={usuariosData}>
+                            <XAxis dataKey="usuario" angle={-30} textAnchor="end" height={70} />
+                            <YAxis />
+                            <Tooltip />
+                            <Bar dataKey="cantidad" fill="#8884d8" />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
 
-                {/* 5. Placeholder: Gráfico de Horarios */}
+                {/* 5. Gráfico de Horarios */}
                 <div className="tarjeta">
                     <h3 className="tarjeta-titulo">⏰ Franjas Horarias</h3>
-                    <p className="placeholder-grafico">[ Aquí irá el PieChart de Recharts ]</p>
+                    <ResponsiveContainer width="100%" height={250}>
+                        <PieChart>
+                            <Pie
+                                data={horariosData}
+                                dataKey="cantidad"
+                                nameKey="franja"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                fill="#82ca9d"
+                                label={({ name }) => name}
+                            />
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
                 </div>
 
                 {/* 6. Placeholder: Nube de Palabras (Combinando clases) */}
