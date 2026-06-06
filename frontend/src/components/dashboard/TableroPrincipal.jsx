@@ -1,4 +1,5 @@
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import WordCloud from "./WordCloud";
 
 export default function TableroPrincipal({ datos, onReiniciar }) {
 
@@ -96,12 +97,13 @@ export default function TableroPrincipal({ datos, onReiniciar }) {
                     </ResponsiveContainer>
                 </div>
 
-                {/* 6. Placeholder: Nube de Palabras (Combinando clases) */}
+                {/* 6. Nube de Palabras */}
                 <div className="tarjeta tarjeta-ancho-total">
                     <h3 className="tarjeta-titulo">☁️ Nube de Palabras</h3>
-                    <p className="placeholder-grafico">[ Aquí irá el componente react-wordcloud ]</p>
+                    <div className="nube-palabras-container">
+                        <WordCloud words={datos.nube_palabras} />
+                    </div>
                 </div>
-
             </div>
         </div>
     )
