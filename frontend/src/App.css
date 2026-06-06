@@ -41,11 +41,19 @@
 
 .contenedor-principal {
   width: 100%;
-  max-width: 550px;
+  /* max-width: 550px; */
   background-color: var(--blanco);
   border-radius: var(--radio-tarjeta);
   box-shadow: var(--sombra-contenedor);
   overflow: hidden;
+}
+
+.modo-carga {
+  max-width: 550px;
+}
+
+.modo-tablero {
+  max-width: 80%;
 }
 
 /* =========================================
@@ -154,9 +162,15 @@
 /* =========================================
   SISTEMA DE CUADRÍCULA Y TARJETAS GLOBALES
    ========================================= */
+
+.tablero-container{
+  padding: 0 0.5rem 0.5rem 0.5rem;
+}
+
 .grid-tablero {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  /* grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); */
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 1.5rem;
 }
 
@@ -211,4 +225,27 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+}
+
+/* =========================================
+  GRAFICOS (RECHARTS)
+   ========================================= */
+
+.recharts-text {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 16px; /* opcional, para que se vean más grandes */
+}
+
+@media (max-width: 700px) {
+    .contenedor-principal {
+      max-width: 100%;
+    }
+
+    .grid-tablero {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .app-container {
+      padding: 0;
+    }
 }

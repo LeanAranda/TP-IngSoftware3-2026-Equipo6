@@ -8,7 +8,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="contenedor-principal">
+      <div className={`contenedor-principal ${result ? "modo-tablero" : "modo-carga"}`}>
         <header className="cabecera-wa">
           <h1>📊 Analizador de Chat WhatsApp</h1>
           <p>Sube tu archivo .zip para procesar las estadísticas</p>
