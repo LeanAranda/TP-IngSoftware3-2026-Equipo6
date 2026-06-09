@@ -5,19 +5,27 @@ import cloud from "d3-cloud";
 const WordCloud = ({ words }) => {
     const svgRef = useRef(null);
 
+    const scale = d3.scaleLinear()
+        .domain([d3.min(words, d => d.value), d3.max(words, d => d.value)]) // valores reales
+        .range([10, 65]); // rango fijo de tamaños en px
+
+
     useEffect(() => {
         const layout = cloud()
             .size([600, 400]) // tamaño del canvas
             .words(
-                words.map((d) => ({
-                    text: d.text,
-                    size: d.value * 2, // escala del tamaño
-                }))
+                words
+                    .sort((a, b) => b.value - a.value)
+                    .slice(0, 100)
+                    .map((d) => ({
+                        text: d.text,
+                        size: scale(d.value) // siempre entre 10 y 65
+                    }))
             )
             .padding(5)
             .rotate(() => (Math.random() > 0.5 ? 0 : 90)) // rotación aleatoria
             .font("Impact")
-            .fontSize((d) => d.size)
+            .fontSize(d => Math.min(d.size, 80)) // límite máximo
             .on("end", draw);
 
         layout.start();
