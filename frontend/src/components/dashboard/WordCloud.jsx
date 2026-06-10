@@ -1,31 +1,51 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import cloud from "d3-cloud";
+import './WordCloud.css'; 
+
+const COLORES_NUBE = [
+    '#00a884', 
+    '#008f70', 
+    '#25D366', 
+    '#3b4a54', 
+    '#4b5563', 
+];
 
 const WordCloud = ({ words }) => {
     const svgRef = useRef(null);
-
-    const scale = d3.scaleLinear()
-        .domain([d3.min(words, d => d.value), d3.max(words, d => d.value)]) // valores reales
-        .range([10, 65]); // rango fijo de tamaños en px
-
+    const [tooltip, setTooltip] = useState({
+        visible: false,
+        text: "",
+        count: 0,
+        x: 0,
+        y: 0
+    });
 
     useEffect(() => {
+        if (!words || words.length === 0) return;
+
+        const scale = d3.scaleLinear()
+            .domain([d3.min(words, d => d.value), d3.max(words, d => d.value)]) 
+            .range([12, 70]);
+
+        d3.select(svgRef.current).selectAll("*").remove();
+
         const layout = cloud()
-            .size([600, 400]) // tamaño del canvas
+            .size([600, 400]) 
             .words(
                 words
                     .sort((a, b) => b.value - a.value)
                     .slice(0, 100)
                     .map((d) => ({
                         text: d.text,
-                        size: scale(d.value) // siempre entre 10 y 65
+                        size: scale(d.value),
+                        value: d.value 
                     }))
             )
-            .padding(5)
-            .rotate(() => (Math.random() > 0.5 ? 0 : 90)) // rotación aleatoria
-            .font("Impact")
-            .fontSize(d => Math.min(d.size, 80)) // límite máximo
+            .padding(4)
+            .rotate(() => (Math.random() > 0.5 ? 0 : 90)) 
+            .font("'-apple-system', 'Segoe UI', Roboto, sans-serif")
+            .fontSize(d => d.size)
             .on("end", draw);
 
         layout.start();
@@ -34,26 +54,59 @@ const WordCloud = ({ words }) => {
             const svg = d3.select(svgRef.current)
                 .attr("viewBox", `0 0 ${layout.size()[0]} ${layout.size()[1]}`)
                 .attr("preserveAspectRatio", "xMidYMid meet")
-                .style("width", "100%")
-                .style("height", "100%");
+                .attr("class", "wordcloud-svg"); 
 
+            const g = svg.append("g")
+                .attr("transform", `translate(${layout.size()[0] / 2},${layout.size()[1] / 2})`);
 
-            svg.selectAll("text")
+            g.selectAll("text")
                 .data(words)
                 .join("text")
-                .style("font-family", "Impact")
-                .style("fill", () => d3.schemeCategory10[Math.floor(Math.random() * 10)])
+                .style("font-family", "'-apple-system', 'Segoe UI', Roboto, sans-serif")
+                .style("font-weight", "bold")
+                .style("fill", () => COLORES_NUBE[Math.floor(Math.random() * COLORES_NUBE.length)])
                 .attr("text-anchor", "middle")
-                .attr(
-                    "transform",
-                    d => `translate(${d.x + layout.size()[0] / 2},${d.y + layout.size()[1] / 2})rotate(${d.rotate})`
-                )
-                .style("font-size", (d) => `${d.size}px`)
-                .text((d) => d.text);
+                .attr("transform", d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
+                .style("font-size", d => `${d.size}px`)
+                .text(d => d.text)
+                .style("cursor", "pointer") 
+                .style("transition", "opacity 0.2s")
+                .on("mouseover", function(event, d) { 
+                    d3.select(this).style("opacity", 0.6); 
+                })
+                .on("mousemove", function(event, d) {
+                    setTooltip({
+                        visible: true,
+                        text: d.text,
+                        count: d.value,
+                        x: event.clientX + 15, // Usamos clientX para posicionamiento fixed
+                        y: event.clientY + 15  // Usamos clientY para posicionamiento fixed
+                    });
+                })
+                .on("mouseout", function() { 
+                    d3.select(this).style("opacity", 1);
+                    setTooltip(prev => ({ ...prev, visible: false }));
+                });
         }
     }, [words]);
 
-    return <svg ref={svgRef}></svg>;
+    return (
+        <div className="wordcloud-wrapper">
+            <svg ref={svgRef} className="wordcloud-svg" />
+            
+            {tooltip.visible && (
+                <div 
+                    className="wordcloud-tooltip"
+                    style={{ 
+                        top: tooltip.y, 
+                        left: tooltip.x 
+                    }}
+                >
+                    <strong>{tooltip.text}</strong>: {tooltip.count} veces
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default WordCloud;

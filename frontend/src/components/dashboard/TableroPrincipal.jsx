@@ -1,34 +1,27 @@
-import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import React from 'react';
 import WordCloud from "./WordCloud";
+import './TableroPrincipal.css'
+// Componentes modulares
+import TarjetaTopEmojis from './TarjetaTopEmojis';
+import TarjetaMensajesUsuario from './TarjetaMensajesUsuario';
+import TarjetaFranjasHorarias from './TarjetaFranjasHorarias';
 
 export default function TableroPrincipal({ datos, onReiniciar }) {
-
-    const usuariosData = Object.entries(datos.grafico_usuarios).map(([usuario, cantidad]) => ({
-        usuario,
-        cantidad
-    }));
-
-    const horariosData = Object.entries(datos.horarios).map(([franja, cantidad]) => ({
-        franja,
-        cantidad
-    }));
-
     return (
-        <div className="tablero-container" style={{ marginTop: '2rem' }}>
+        <div className="tablero-container tablero-wrapper">
 
-            {/* Cabecera usando nuestra clase flex-entre */}
+            {/* Cabecera sin estilos en línea */}
             <div className="flex-entre">
-                <h2 style={{ margin: 0, color: 'var(--texto-principal)' }}>Resultados del Análisis</h2>
+                <h2 className="titulo-principal">Resultados del Análisis</h2>
                 <button
                     onClick={onReiniciar}
-                    className="btn-wa"
-                    style={{ width: 'auto', padding: '0.5rem 1rem', margin: 0 }}
+                    className="btn-wa btn-header"
                 >
                     ↻ Analizar otro chat
                 </button>
             </div>
 
-            {/* Cuadrícula usando la clase global */}
+            {/* Cuadrícula global */}
             <div className="grid-tablero">
 
                 {/* 1. Usuario Top */}
@@ -51,51 +44,12 @@ export default function TableroPrincipal({ datos, onReiniciar }) {
                     </ul>
                 </div>
 
-                {/* 3. Top Emojis*/}
-                <div className="tarjeta">
-                    <h3 className="tarjeta-titulo">🔥 Top Emojis</h3>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={datos.emojis}>
-                            <XAxis dataKey="emoji" className="recharts-text" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="cantidad" fill="#ff9800" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-
-                {/* 4. Gráfico de Usuarios */}
-                <div className="tarjeta">
-                    <h3 className="tarjeta-titulo">📊 Mensajes por Usuario</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={usuariosData}>
-                            <XAxis dataKey="usuario" angle={-30} textAnchor="end" height={70} />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="cantidad" fill="#8884d8" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-
-                {/* 5. Gráfico de Horarios */}
-                <div className="tarjeta">
-                    <h3 className="tarjeta-titulo">⏰ Franjas Horarias</h3>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <PieChart>
-                            <Pie
-                                data={horariosData}
-                                dataKey="cantidad"
-                                nameKey="franja"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                fill="#82ca9d"
-                                label={({ name }) => name}
-                            />
-                            <Tooltip />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </div>
+                {/* Componentes modulares */}
+                <TarjetaTopEmojis emojis={datos.emojis} />
+                
+                <TarjetaMensajesUsuario graficoUsuarios={datos.grafico_usuarios} />
+                
+                <TarjetaFranjasHorarias horarios={datos.horarios} />
 
                 {/* 6. Nube de Palabras */}
                 <div className="tarjeta tarjeta-ancho-total">
@@ -104,7 +58,8 @@ export default function TableroPrincipal({ datos, onReiniciar }) {
                         <WordCloud words={datos.nube_palabras} />
                     </div>
                 </div>
+
             </div>
         </div>
-    )
+    );
 }
