@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import './TarjetaFranjasHorarias.css';
 
 export default function TarjetaFranjasHorarias({ horarios }) {
     const horariosData = useMemo(() => {
@@ -10,7 +11,7 @@ export default function TarjetaFranjasHorarias({ horarios }) {
     }, [horarios]);
 
     return (
-        <div className="tarjeta">
+<div className="tarjeta">
             <h3 className="tarjeta-titulo">⏰ Franjas Horarias</h3>
             <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
@@ -20,11 +21,17 @@ export default function TarjetaFranjasHorarias({ horarios }) {
                         nameKey="franja"
                         cx="50%"
                         cy="50%"
+                        innerRadius={50} 
                         outerRadius={80}
+                        paddingAngle={3}
                         fill="#82ca9d"
-                        label={({ name }) => name}
                     />
                     <Tooltip />
+                    <Legend 
+                        verticalAlign="bottom" 
+                        height={36} 
+                        iconType="circle" 
+                    />
                 </PieChart>
             </ResponsiveContainer>
         </div>

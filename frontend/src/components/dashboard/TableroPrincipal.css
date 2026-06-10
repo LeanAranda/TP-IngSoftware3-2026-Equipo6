@@ -1,5 +1,9 @@
 .tablero-wrapper {
     margin-top: 2rem;
+    padding: 0 1rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .titulo-principal {
