@@ -1,22 +1,30 @@
-# 📊 Frontend - Componente de Carga y Procesamiento de Chats
+# 📊 Frontend - Analizador de Chat de WhatsApp
 
-Este sector del frontend contiene la interfaz modular diseñada para la carga, validación y envío de archivos de historial de chat de WhatsApp (`.zip`) hacia el backend desarrollado en FastAPI.
+Este sector del frontend contiene la interfaz modular diseñada para la carga, validación y visualización interactiva de historiales de chat de WhatsApp (`.zip`). 
 
-La interfaz fue estilizada siguiendo la identidad visual y paleta de colores característica de **WhatsApp Web**, ofreciendo una experiencia de usuario limpia, intuitiva y responsiva.
+La interfaz fue estilizada siguiendo un diseño moderno y minimalista (inspirado en herramientas de análisis de datos), ofreciendo una experiencia de usuario limpia, responsiva y con soporte para *Drag & Drop*.
 
-## 💻 Cómo Probar esta Funcionalidad
+## 💻 Cómo Inicializar y Probar el Proyecto
 
-1.  Asegúrate de tener el backend de FastAPI corriendo en su respectivo puerto (ej: `http://localhost:8000`).
-2.  Verifica que el archivo `vite.config.js` tenga configurado el proxy apuntando a la dirección local de tu backend para resolver las rutas `/api/*`.
-3.  Inicia el servidor de desarrollo del frontend:
-3. Instala las dependencias necesarias del proyecto ejecutando:
-   ```bash
-   npm install
-   ```
-   Inicia el servidor de desarrollo del frontend:
-    ```bash
-    npm run dev
-    ```
-4.  Selecciona un archivo `.zip` que contenga un chat exportado de WhatsApp (Android o iOS) y presiona **"Subir ZIP"**. 
-5.  5. Abre tu navegador en la dirección local del frontend: `http://localhost:5173`.
-Al finalizar el análisis, el componente mostrará un mensaje de éxito indicando que el estado `result` ya contiene el JSON estructurado con métricas (usuarios top, emojis, franjas horarias y nube de palabras), quedando listo para la fase de graficación.
+### 1. Instalar dependencias
+Abre una terminal en la raíz de la carpeta del frontend y ejecuta:
+```bash
+npm install
+```
+
+### 2. Verificar el Backend
+Asegúrate de tener el servidor de FastAPI corriendo en paralelo (por defecto en `http://localhost:8000`). Esto es vital para que las peticiones del frontend no fallen.
+
+### 3. Iniciar el servidor de desarrollo
+Levanta la aplicación de React con Vite ejecutando:
+```bash
+npm run dev
+```
+
+### 4. Abrir la aplicación
+Ve a tu navegador e ingresa a la dirección local que te indique la terminal (usualmente 🔗 `http://localhost:5173`).
+
+### 5. Uso de la herramienta
+* Arrastra y suelta un archivo `.zip` (que contenga un chat exportado de WhatsApp) sobre la zona de carga, o haz clic para seleccionarlo manualmente.
+* Presiona el botón **"Analizar Chat"**. 
+* Al finalizar el procesamiento, la vista cambiará automáticamente al **Tablero Principal**, donde el JSON estructurado cobrará vida a través de gráficos interactivos (Top Usuarios, Emojis, Franjas Horarias) y una Nube de Palabras dinámica.
