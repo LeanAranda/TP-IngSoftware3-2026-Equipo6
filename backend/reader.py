@@ -9,6 +9,7 @@ def leer_chat_desde_zip(archivo_zip_memoria):
 
     :param archivo_zip_memoria: objeto del archivo ZIP subido.
     :return: list - Una lista con las líneas de texto del chat.
+    :raises: zipfile.BadZipFile - Si el archivo proporcionado no es un ZIP válido.
     :raises: FileNotFoundError si el ZIP no contiene archivo.txt.
     """
 
