@@ -1,22 +1,26 @@
 import pandas as pd
+import emoji 
+from collections import Counter
+
+# Lista de emojis que usa WhatsApp para color de piel y género que queremos ignorar
+modificadores_ignorar = ['🏻', '🏼', '🏽', '🏾', '🏿', '♂', '♀', '♂️', '♀️', '\ufe0f']
 
 def calcular_estadisticas_usuarios(df):
     """
     TAREA WBS : [1.3.1] Recuento total de mensajes por usuario
-    
+    TAREA WBS : [1.3.2] Buscar emoji más utilizado
+
     Realiza el análisis cuantitativo sobre el DataFrame para obtener el ranking 
-    de participación y el usuario con mayor actividad.
+    de participación y el usuario con mayor actividad y el top de emojis utilizados.
 
     :param df: pd.DataFrame - DataFrame procesado que debe contener la columna 'Usuario'.
-    :return: dict - Diccionario con 'usuario_top' y 'grafico_usuarios' (Top 5).
+    :return: dict - Diccionario con 'usuario_top' y 'grafico_usuarios' (Top 5) y 'emojis'.
     :raises: ValueError - Si el DataFrame está vacío.
     :raises: KeyError - Si faltan las columnas requeridas para el cálculo.
     """
 
-    # 1. Definimos las columnas que el módulo NECESITA para no fallar
+    # 1. Validación preventiva de integridad
     columnas_requeridas = ['Usuario', 'Fecha', 'Hora', 'Mensaje']
-
-    # 2. Verificamos si el DataFrame está vacío o si le falta alguna columna
     columnas_faltantes = [col for col in columnas_requeridas if col not in df.columns]
     
     if df.empty:
@@ -25,15 +29,46 @@ def calcular_estadisticas_usuarios(df):
     if columnas_faltantes:
         # Informamos exactamente qué columnas faltan para una trazabilidad extrema
         raise KeyError(f"Faltan columnas necesarias en el chat: {', '.join(columnas_faltantes)}")
-    # 3. Obtener el ranking completo (Serie de Pandas)
+    
+    # 2. Lógica Tarea [1.3.1]: Ranking de Usuarios
     ranking_usuarios = df['Usuario'].value_counts()
-
-    # 4. Identificamos al ganador (ID del valor máximo)
     user_mas_mensajes= ranking_usuarios.idxmax()
 
-    # 5. Preparamos el "paquete" de retorno (convertimos a diccionario para JSON)
+    # 3. Lógica Tarea [1.3.2]: Conteo de Emojis
+    def extraer_emojis(texto):
+        """ 
+        Identifica secuencias completas de emojis y las unifica a su base
+        eliminando modificadores de tono, género y selectores de variación.
+        :param texto: str - El mensaje original del chat.
+        :return: list - Lista de emojis (strings) normalizados.
+        """
+        # 1. Detecta el bloque completo (ej: '👩‍⚕️' o '👍🏾')
+        lista_deteccion = emoji.emoji_list(str(texto))
+    
+        emojis_normalizados = []
+        for item in lista_deteccion:
+            # 2. Limpia los modificadores de ADENTRO de la secuencia detectada
+            base = ''.join([c for c in item['emoji'] if c not in modificadores_ignorar])
+            if base:
+                emojis_normalizados.append(base)
+            
+        # CAMBIO CLAVE 1: Devolvemos una LISTA, no un string unido
+        return emojis_normalizados
+    
+    # CAMBIO CLAVE 2: Creamos una lista plana con todos los emojis detectados
+    todas_las_listas = df['Mensaje'].apply(extraer_emojis)
+    lista_final_emojis = [emj for sublista in todas_las_listas for emj in sublista]
+
+    # CAMBIO CLAVE 3: El Counter ahora recibe una LISTA de strings (unidades completas)
+    conteo_emojis = Counter(lista_final_emojis)
+
+    # Preparamos el formato específico para el frontend (top 5)
+    top_emojis = [{"emoji": e[0], "cantidad": e[1]} for e in conteo_emojis.most_common(5)]
+
+    # 4. Paquete de retorno integrado
 
     return {
         "usuario_top": user_mas_mensajes,
-        "grafico_usuarios": ranking_usuarios.head(5).to_dict()
+        "grafico_usuarios": ranking_usuarios.head(5).to_dict(),
+        "emojis": top_emojis 
     }
