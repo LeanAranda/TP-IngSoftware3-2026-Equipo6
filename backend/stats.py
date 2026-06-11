@@ -9,7 +9,7 @@ def calcular_estadisticas_usuarios(df):
     """
     TAREA WBS : [1.3.1] Recuento total de mensajes por usuario
     TAREA WBS : [1.3.2] Buscar emoji más utilizado
-
+    TAREA WBS: [2.1.1] Calcular franja horaria con mayor actividad
     Realiza el análisis cuantitativo sobre el DataFrame para obtener el ranking 
     de participación y el usuario con mayor actividad y el top de emojis utilizados.
 
@@ -65,10 +65,26 @@ def calcular_estadisticas_usuarios(df):
     # Preparamos el formato específico para el frontend (top 5)
     top_emojis = [{"emoji": e[0], "cantidad": e[1]} for e in conteo_emojis.most_common(5)]
 
+    # Extrae la hora pero convertida a NÚMERO (entero)
+    df['Hora_Num'] = df['Hora'].apply(lambda x: int(x.split(':')[0]))
+    
+    # Define los "cortes" (bins) y las etiquetas
+    # El -1 es  para que el rango incluya la hora 0 (la medianoche).
+    # Los cortes son: de -1 a 6, de 6 a 12, de 12 a 19, y de 19 a 24.
+    limites = [-1, 6, 12, 19, 24]
+    nombres_rangos = ['Madrugada (00-06hs)', 'Mañana (07-12hs)', 'Tarde (13-19hs)', 'Noche (20-23hs)']
+    
+    # Se usa pd.cut para que Pandas clasifique cada fila automáticamente
+    df['Rango_Horario'] = pd.cut(df['Hora_Num'], bins=limites, labels=nombres_rangos)
+
+    # Ahora se cuentan los valores sobre esta nueva columna
+    franjas_agrupadas = df['Rango_Horario'].value_counts()
+
     # 4. Paquete de retorno integrado
 
     return {
         "usuario_top": user_mas_mensajes,
         "grafico_usuarios": ranking_usuarios.head(5).to_dict(),
-        "emojis": top_emojis 
+        "emojis": top_emojis,
+        "horarios": franjas_agrupadas.to_dict()
     }

@@ -78,6 +78,41 @@ class TestStatsCalculos(unittest.TestCase):
         corazon = next(item for item in ranking if item["emoji"] == "❤")
         self.assertEqual(corazon["cantidad"], 1, "Error: El corazón no fue normalizado a su forma base.")
 
+        # --- TAREA [2.1.1]: TEST DE FRANJAS HORARIAS (NUEVO) ---
+
+    def test_clasificacion_franjas_horarias(self):
+        """
+        PRUEBA DE LÍMITES: Verifica que pd.cut asigne los mensajes a los baldes 
+        correctos según la hora numérica extraída.
+        """
+        # Preparación de horas críticas: 0, 6, 12, 19, 23 (límites de los bins)
+        data = {
+            'Usuario': ['Diego'] * 5,
+            'Mensaje': ['Mensaje de prueba'] * 5,
+            'Fecha': ['11/06/2026'] * 5,
+            'Hora': ['00:00', '06:59', '12:00', '19:00', '23:30']
+        }
+        df = pd.DataFrame(data)
+        
+        # Ejecución
+        resultado = calcular_estadisticas_usuarios(df)
+        horarios = resultado['horarios'] # Diccionario con el conteo de franjas [5]
+
+        # Verificaciones basadas en límites [-1, 6, 12, 19, 24] [1]
+        # 1. '00:00' (0) y '06:59' (6) -> Caen en Madrugada (-1, 6]
+        self.assertEqual(horarios.get('Madrugada (00-06hs)', 0), 2)
+        
+        # 2. '12:00' (12) -> Cae en Mañana (6, 12]
+        self.assertEqual(horarios.get('Mañana (07-12hs)', 0), 1)
+        
+        # 3. '19:00' (19) -> Cae en Tarde (12, 19]
+        self.assertEqual(horarios.get('Tarde (13-19hs)', 0), 1)
+        
+        # 4. '23:30' (23) -> Cae en Noche (19, 24]
+        self.assertEqual(horarios.get('Noche (20-23hs)', 0), 1)
+
+
+
 # Bloque condicional de ejecución para correr los tests
 if __name__ == "__main__":
     unittest.main()
