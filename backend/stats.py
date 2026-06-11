@@ -1,5 +1,6 @@
 import pandas as pd
 import emoji 
+import re
 from collections import Counter
 
 # Lista de emojis que usa WhatsApp para color de piel y género que queremos ignorar
@@ -7,17 +8,27 @@ modificadores_ignorar = ['🏻', '🏼', '🏽', '🏾', '🏿', '♂', '♀', '
 
 def calcular_estadisticas_usuarios(df):
     """
+    Realiza un análisis cuantitativo integral sobre el DataFrame para obtener 
+    métricas de participación, uso de emojis y tendencias temporales.
+
     TAREA WBS : [1.3.1] Recuento total de mensajes por usuario.
     TAREA WBS : [1.3.2] Buscar emoji más utilizado.
-    TAREA WBS: [2.1.1] Calcular franja horaria con mayor actividad.
-    TAREA WBS: [2.1.2] Calcular días con mayor cantidad de mensajes (días pico).
-    Realiza el análisis cuantitativo sobre el DataFrame para obtener el ranking 
-    de participación y el usuario con mayor actividad y el top de emojis utilizados.
+    TAREA WBS : [2.1.1] Calcular franja horaria con mayor actividad.
+    TAREA WBS : [2.1.2] Calcular días con mayor cantidad de mensajes (días pico).
+    TAREA WBS : [2.1.3] Recuento de palabras más frecuentes (Word Cloud).
 
-    :param df: pd.DataFrame - DataFrame procesado que debe contener la columna 'Usuario'.
-    :return: dict - Diccionario con 'usuario_top' y 'grafico_usuarios' (Top 5) y 'emojis'.
+    :param df: pd.DataFrame - DataFrame procesado que debe contener las columnas 
+                'Usuario', 'Fecha', 'Hora' y 'Mensaje'.
+    :return: dict - Diccionario con los resultados del análisis:
+            - 'usuario_top' (str): Nombre del usuario con más mensajes.
+            - 'grafico_usuarios' (dict): Top 5 de usuarios y su conteo de mensajes.
+            - 'emojis' (list): Top 5 de emojis normalizados y su frecuencia.
+            - 'horarios' (dict): Distribución de mensajes por franjas horarias.
+            - 'dias_pico' (dict): Top 5 de fechas con mayor volumen de actividad.
+            - 'nube_palabras' (list): Top 50 de palabras clave en formato para React 
+            [{"text": p, "value": c}].
     :raises: ValueError - Si el DataFrame está vacío.
-    :raises: KeyError - Si faltan las columnas requeridas para el cálculo.
+    :raises: KeyError - Si faltan columnas requeridas para los cálculos avanzados.
     """
 
     # 1. Validación preventiva de integridad
@@ -86,12 +97,34 @@ def calcular_estadisticas_usuarios(df):
     # Guarda el dia con mas mensajes
     dias_mas_activos = df['Fecha'].value_counts()
 
-    # 6. Paquete de retorno integrado
+    # 6. Lógica Tarea [2.1.3]: Conteo de palabras para la word cloud
+
+    # 7. Paquete de retorno integrado
+
+    # Junta todos los mensajes en un texto gigante
+    texto_completo = " ".join(df['Mensaje'].dropna())
+    # Pasa todo a minúsculas y extrae solo las palabras (se ignoran comas, puntos, emojis)
+    # Esta expresión regular busca secuencias de letras (incluyendo acentos y ñ)
+    palabras = re.findall(r'\b[a-záéíóúñ]+\b', texto_completo.lower())
+    # Palabras que no aportan valor
+    stopwords = {'que', 'de', 'la', 'el', 'en', 'y', 'a', 'los', 'se', 'del', 'las', 'un', 'por',
+                'con', 'no', 'una', 'su', 'para', 'es', 'al', 'lo', 'como', 'más', 'pero', 'sus',
+                'le', 'ya', 'o', 'este', 'sí', 'porque', 'esta', 'entre', 'cuando', 'muy', 'sin',
+                'sobre', 'también', 'me', 'hasta', 'hay', 'donde', 'quien', 'desde', 'todo', 'nos',
+                'eso', 'te', 'si', 'multimedia', 'omitido', 'omitida', 'imagen', 'sticker', 'audio', 'documento'}
+    # Filtra las stopwords y palabras muy cortitas (ej: "ja", "ah")
+    palabras_limpias = [p for p in palabras if p not in stopwords and len(p) > 2]
+    # Cuenta las frecuencias
+    conteo_palabras = Counter(palabras_limpias)
+    # Arma el formato que pide React (una lista de diccionarios)
+    # Agarra el Top 50 para que la nube no sea muy extensa
+    formato_react = [{"text": palabra, "value": cantidad} for palabra, cantidad in conteo_palabras.most_common(50)]
 
     return {
         "usuario_top": user_mas_mensajes,
         "grafico_usuarios": ranking_usuarios.head(5).to_dict(),
         "emojis": top_emojis,
         "horarios": franjas_agrupadas.to_dict(),
-        "dias_pico": dias_mas_activos.head(5).to_dict()
+        "dias_pico": dias_mas_activos.head(5).to_dict(),
+        "nube_palabras": formato_react
     }

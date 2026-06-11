@@ -129,6 +129,29 @@ class TestStatsCalculos(unittest.TestCase):
         self.assertEqual(resultado['dias_pico']['01/01/2026'], 3)
         self.assertEqual(resultado['dias_pico']['02/01/2026'], 1)
 
+    # --- TAREA [2.1.3]: TEST DE NUBE DE PALABRAS ---
+
+    def test_recuento_palabras_frecuentes(self):
+        """
+        Verifica que se limpien las stopwords y se cuenten palabras válidas.
+        """
+        data = {
+            'Usuario': ['User'],
+            'Mensaje': ['Hola hola que tal el imagen'], # 'que', 'el', 'tal' son cortos o stopwords
+            'Fecha': ['01/01/2026'],
+            'Hora': ['10:00']
+        }
+        df = pd.DataFrame(data)
+        resultado = calcular_estadisticas_usuarios(df)
+    
+        # 'hola' aparece 2 veces. 'que', 'el', 'imagen' deben ser ignorados.
+        # Buscamos 'hola' en la lista de diccionarios de la nube de palabras
+        palabra_hola = next(item for item in resultado['nube_palabras'] if item["text"] == "hola")
+        self.assertEqual(palabra_hola["value"], 2)
+    
+        # Verificamos que 'imagen' (archivo omitido) no esté en el conteo
+        self.assertFalse(any(item["text"] == "imagen" for item in resultado['nube_palabras']))
+
 
 # Bloque condicional de ejecución para correr los tests
 if __name__ == "__main__":
