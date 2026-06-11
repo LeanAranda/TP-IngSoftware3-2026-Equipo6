@@ -7,9 +7,10 @@ modificadores_ignorar = ['🏻', '🏼', '🏽', '🏾', '🏿', '♂', '♀', '
 
 def calcular_estadisticas_usuarios(df):
     """
-    TAREA WBS : [1.3.1] Recuento total de mensajes por usuario
-    TAREA WBS : [1.3.2] Buscar emoji más utilizado
-    TAREA WBS: [2.1.1] Calcular franja horaria con mayor actividad
+    TAREA WBS : [1.3.1] Recuento total de mensajes por usuario.
+    TAREA WBS : [1.3.2] Buscar emoji más utilizado.
+    TAREA WBS: [2.1.1] Calcular franja horaria con mayor actividad.
+    TAREA WBS: [2.1.2] Calcular días con mayor cantidad de mensajes (días pico).
     Realiza el análisis cuantitativo sobre el DataFrame para obtener el ranking 
     de participación y el usuario con mayor actividad y el top de emojis utilizados.
 
@@ -65,6 +66,7 @@ def calcular_estadisticas_usuarios(df):
     # Preparamos el formato específico para el frontend (top 5)
     top_emojis = [{"emoji": e[0], "cantidad": e[1]} for e in conteo_emojis.most_common(5)]
 
+    # 4. Lógica Tarea [2.1.1]: Agrupación por franjas horarias
     # Extrae la hora pero convertida a NÚMERO (entero)
     df['Hora_Num'] = df['Hora'].apply(lambda x: int(x.split(':')[0]))
     
@@ -80,11 +82,16 @@ def calcular_estadisticas_usuarios(df):
     # Ahora se cuentan los valores sobre esta nueva columna
     franjas_agrupadas = df['Rango_Horario'].value_counts()
 
-    # 4. Paquete de retorno integrado
+    # 5. Lógica Tarea [2.1.2]: Días con mayor cantidad de mensajes
+    # Guarda el dia con mas mensajes
+    dias_mas_activos = df['Fecha'].value_counts()
+
+    # 6. Paquete de retorno integrado
 
     return {
         "usuario_top": user_mas_mensajes,
         "grafico_usuarios": ranking_usuarios.head(5).to_dict(),
         "emojis": top_emojis,
-        "horarios": franjas_agrupadas.to_dict()
+        "horarios": franjas_agrupadas.to_dict(),
+        "dias_pico": dias_mas_activos.head(5).to_dict()
     }

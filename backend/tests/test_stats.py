@@ -111,6 +111,23 @@ class TestStatsCalculos(unittest.TestCase):
         # 4. '23:30' (23) -> Cae en Noche (19, 24]
         self.assertEqual(horarios.get('Noche (20-23hs)', 0), 1)
 
+    # --- TAREA [2.1.2]: TEST DE DÍAS PICO ---
+    def test_calculo_dias_pico(self):
+        """
+        Verifica que se identifiquen correctamente los días con más mensajes.
+        """
+        data = {
+            'Usuario': ['User'] * 4,
+            'Mensaje': ['msg'] * 4,
+            'Fecha': ['01/01/2026', '01/01/2026', '01/01/2026', '02/01/2026'],
+            'Hora': ['10:00'] * 4
+        }
+        df = pd.DataFrame(data)
+        resultado = calcular_estadisticas_usuarios(df)
+        
+        # El día 01/01 tiene 3 mensajes, el 02/01 tiene 1.
+        self.assertEqual(resultado['dias_pico']['01/01/2026'], 3)
+        self.assertEqual(resultado['dias_pico']['02/01/2026'], 1)
 
 
 # Bloque condicional de ejecución para correr los tests
