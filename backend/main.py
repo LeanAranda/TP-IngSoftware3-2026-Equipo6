@@ -2,9 +2,9 @@ import zipfile
 
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from .reader import leer_chat_desde_zip
-from .parser import parsear_chat_desde_lineas
-from .stats import calcular_estadisticas_usuarios
+from reader import leer_chat_desde_zip
+from parser import parsear_chat_desde_lineas
+from stats import calcular_estadisticas_usuarios
 
 # Inicializamos la API
 app = FastAPI()
