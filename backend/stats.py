@@ -124,7 +124,10 @@ def calcular_estadisticas_usuarios(df):
         'multimedia', 'omitido', 'omitida', 'imagen', 'sticker', 'audio', 'documento', 
         'hola', 'buenas', 'chau', 'gracias', 'bien', 'bueno', 'loco', 'va', 'dale'
     }
-    resultado_final = [p for p in palabras_limpias if p not in basura_whatsapp and len(p) > 2]
+    # Expresión regular que detecta si una palabra es la repetición exacta de su raíz (ej: si-si, no-no)
+    # (\w+)\1 significa: "captura un grupo de letras y busca si se repite exactamente igual al lado"
+    patron_repetido = re.compile(r'^(\w+)\1+$')
+    resultado_final = [p for p in palabras_limpias if p not in basura_whatsapp and len(p) > 2 and not patron_repetido.match(p)]
     # Cuenta las frecuencias
     conteo_palabras = Counter(resultado_final)
     # Arma el formato que pide React (una lista de diccionarios)
