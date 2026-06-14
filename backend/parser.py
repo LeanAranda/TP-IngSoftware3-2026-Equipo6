@@ -17,8 +17,11 @@ def parsear_chat_desde_lineas(lineas_chat):
     """
     TAREA Cronograma : [1.2.4] Exportación de datos
 
-    Recibe una lista de lineas extraidas del txt y devuelve un DataFrame
-    con las columnas Fecha, Hora, Usuario y Mensaje.
+    Procesa una lista de cadenas de texto crudas, aplica expresiones regulares 
+    para identificar el formato (Android/iOS) y estructura los mensajes.
+
+    :param lineas: list - Lista de strings con las líneas extraídas del archivo .txt.
+    :return: pd.DataFrame - DataFrame con columnas ['Fecha', 'Hora', 'Usuario', 'Mensaje'].
     """
 
     datos_parseados = [] # Lista para guardar los mensajes estructurados
