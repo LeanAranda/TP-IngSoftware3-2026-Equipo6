@@ -53,15 +53,24 @@ export default function CargaArchivo({ onResultados }) {
             })
 
             if (!res.ok) {
-                const errorText = await res.text()
-                throw new Error(`Error del servidor (${res.status}): ${errorText}`)
+                const errorJson = await res.json()
+                const mensajeBackend = errorJson.detail || 'Error desconocido del servidor'
+                throw new Error(mensajeBackend)
             }
 
             const data = await res.json()
             onResultados(data) 
         } catch (error) {
             console.error("Error detallado:", error)
-            setError(`Error al procesar el archivo. ¿Estás seguro de que es un chat válido exportado de WhatsApp?`)
+            // VALIDACIÓN INTELIGENTE:
+            // Si el error contiene la palabra 'fetch' o 'NetworkError', sabemos que el servidor está caído
+            if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+                setError("🔌 No se pudo establecer conexión con el servidor. Por favor, verifica que el backend de Python esté encendido.")
+            } else {
+                // Si no es un error de red, significa que es el error semántico (400, 422, 500) 
+                // que capturamos en el 'throw new Error(mensajeBackend)' de arriba
+                setError(error.message)
+            }
         } finally {
             setLoading(false)
         }

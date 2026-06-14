@@ -14,10 +14,15 @@ python -m venv .venv --clear
 ```
 > 💡 *Si PowerShell arroja un error de políticas, ejecuta primero:* `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned`
 
-**En Mac / Linux / Git Bash:**
+**En Mac / Linux:**
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+```
+**En Windows (Git Bash):**
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
 ```
 
 ### 2. Instalar dependencias
@@ -31,6 +36,8 @@ Una vez instalado todo, levanta el motor de la API con el siguiente comando:
 
 ```bash
 uvicorn main:app --reload
+o
+python -m uvicorn main:app --reload
 ```
 > ⚠️ **Importante:** No cierres esta terminal mientras estés trabajando en React, de lo contrario el backend se apagará y el frontend no podrá consultar los datos.
 
