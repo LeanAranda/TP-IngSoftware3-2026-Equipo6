@@ -1,7 +1,20 @@
+import subprocess
+import sys
+
 import pandas as pd
 import emoji 
 import re
+import spacy
 from collections import Counter
+
+# Intentar cargar el modelo; si falla, lo descargamos automáticamente
+try:
+    nlp = spacy.load("es_core_news_sm")
+except OSError:
+    print("Modelo 'es_core_news_sm' no encontrado. Descargando automáticamente...")
+    subprocess.run([sys.executable, "-m", "spacy", "download", "es_core_news_sm"], check=True)
+    # Volver a cargar el modelo después de la instalación exitosa
+    nlp = spacy.load("es_core_news_sm")
 
 # Lista de emojis que usa WhatsApp para color de piel y género que queremos ignorar
 modificadores_ignorar = ['🏻', '🏼', '🏽', '🏾', '🏿', '♂', '♀', '♂️', '♀️', '\ufe0f']
@@ -101,21 +114,31 @@ def calcular_estadisticas_usuarios(df):
 
     # 7. Paquete de retorno integrado
 
-    # Junta todos los mensajes en un texto gigante
-    texto_completo = " ".join(df['Mensaje'].dropna())
-    # Pasa todo a minúsculas y extrae solo las palabras (se ignoran comas, puntos, emojis)
-    # Esta expresión regular busca secuencias de letras (incluyendo acentos y ñ)
-    palabras = re.findall(r'\b[a-záéíóúñ]+\b', texto_completo.lower())
-    # Palabras que no aportan valor
-    stopwords = {'que', 'de', 'la', 'el', 'en', 'y', 'a', 'los', 'se', 'del', 'las', 'un', 'por',
-                'con', 'no', 'una', 'su', 'para', 'es', 'al', 'lo', 'como', 'más', 'pero', 'sus',
-                'le', 'ya', 'o', 'este', 'sí', 'porque', 'esta', 'entre', 'cuando', 'muy', 'sin',
-                'sobre', 'también', 'me', 'hasta', 'hay', 'donde', 'quien', 'desde', 'todo', 'nos',
-                'eso', 'te', 'si', 'multimedia', 'omitido', 'omitida', 'imagen', 'sticker', 'audio', 'documento'}
-    # Filtra las stopwords y palabras muy cortitas (ej: "ja", "ah")
-    palabras_limpias = [p for p in palabras if p not in stopwords and len(p) > 2]
+    # Junta todos los mensajes en un texto gigante y limpio
+    texto_completo = " ".join(df['Mensaje'].dropna()).lower()
+    
+    # Procesamiento Inteligente de SpaCy
+    doc = nlp(texto_completo)
+    #  Filtrado Arquitectónico (Una sola línea de procesamiento)
+    palabras_limpias = [
+        token.lemma_  # <-- Guardamos la raíz de la palabra (Lematización)
+        for token in doc
+        if not token.is_stop      # Filtra automáticamente TODAS las stopwords del español
+        and not token.is_punct    # Filtra automáticamente puntos, comas y signos
+        and token.is_alpha        # Filtra números, URLs (https, com) y emojis
+        and len(token.text) > 2   # Tu regla original para eliminar "ja", "ah", etc.
+    ]
+    #  El set de WhatsApp remanente (Solo lo que no es del lenguaje humano)
+    basura_whatsapp = {
+        'multimedia', 'omitido', 'omitida', 'imagen', 'sticker', 'audio', 'documento', 
+        'hola', 'buenas', 'chau', 'gracias', 'bien', 'bueno', 'loco', 'va', 'dale'
+    }
+    # Expresión regular que detecta si una palabra es la repetición exacta de su raíz (ej: si-si, no-no)
+    # (\w+)\1 significa: "captura un grupo de letras y busca si se repite exactamente igual al lado"
+    patron_repetido = re.compile(r'^(\w+)\1+$')
+    resultado_final = [p for p in palabras_limpias if p not in basura_whatsapp and len(p) > 2 and not patron_repetido.match(p)]
     # Cuenta las frecuencias
-    conteo_palabras = Counter(palabras_limpias)
+    conteo_palabras = Counter(resultado_final)
     # Arma el formato que pide React (una lista de diccionarios)
     # Agarra el Top 50 para que la nube no sea muy extensa
     formato_react = [{"text": palabra, "value": cantidad} for palabra, cantidad in conteo_palabras.most_common(50)]
