@@ -1,6 +1,6 @@
 import zipfile
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from reader import leer_chat_desde_zip
 from parser import parsear_chat_desde_lineas
@@ -55,9 +55,23 @@ async def analizar(archivo: UploadFile = File(...)):
         estadisticas_usuarios = calcular_estadisticas_usuarios(df)
 
         return estadisticas_usuarios
-    except (FileNotFoundError,zipfile.BadZipFile) as e:
-        return {"error": str(e)}
+    except (FileNotFoundError, zipfile.BadZipFile) as e:
+        # Usamos 400 Bad Request porque el problema es el archivo que envió el usuario.
+        # Conservamos tu mensaje descriptivo original a través de str(e).
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
     except (ValueError, KeyError) as e:
-        return {"error": f"Error al procesar estadísticas: {str(e)}"}
+        # Usamos 422 Unprocessable Entity cuando el archivo es un ZIP válido 
+        # pero los datos internos no permiten realizar los cálculos (ej: faltan columnas).
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Error al procesar estadísticas: {str(e)}"
+        )
     except Exception as e:
-        return {"error": "Ocurrio un error inesperado al procesar los datos."}
+        # Usamos 500 para cualquier otro error no previsto en la lógica del servidor.
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocurrió un error inesperado al procesar los datos."
+        )
