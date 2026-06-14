@@ -1,0 +1,51 @@
+.zona-carga-activa {
+    border-color: var(--wa-verde-principal);
+    background-color: var(--fondo-zona-hover);
+    transform: scale(1.02); 
+}
+
+.zona-carga-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+}
+
+.file-hint {
+    font-size: 0.85rem;
+    color: var(--texto-claro);
+    margin-top: 0.5rem;
+}
+
+.alerta-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid #ef4444;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.flex-centro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: girar 1s ease-in-out infinite;
+}
+
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
