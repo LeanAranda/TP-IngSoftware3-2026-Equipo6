@@ -1,11 +1,20 @@
+import subprocess
+import sys
+
 import pandas as pd
 import emoji 
 import re
 import spacy
 from collections import Counter
 
-# 1. Cargamos el modelo en español de SpaCy (Alta eficiencia)
-nlp = spacy.load("es_core_news_sm")
+# Intentar cargar el modelo; si falla, lo descargamos automáticamente
+try:
+    nlp = spacy.load("es_core_news_sm")
+except OSError:
+    print("Modelo 'es_core_news_sm' no encontrado. Descargando automáticamente...")
+    subprocess.run([sys.executable, "-m", "spacy", "download", "es_core_news_sm"], check=True)
+    # Volver a cargar el modelo después de la instalación exitosa
+    nlp = spacy.load("es_core_news_sm")
 
 # Lista de emojis que usa WhatsApp para color de piel y género que queremos ignorar
 modificadores_ignorar = ['🏻', '🏼', '🏽', '🏾', '🏿', '♂', '♀', '♂️', '♀️', '\ufe0f']
