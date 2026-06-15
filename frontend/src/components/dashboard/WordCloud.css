@@ -1,0 +1,24 @@
+.wordcloud-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.wordcloud-svg {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+}
+
+.wordcloud-tooltip {
+    position: fixed;
+    background-color: var(--blanco);
+    padding: 8px 12px;
+    border: 1px solid var(--borde-claro);
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    pointer-events: none; 
+    z-index: 1000;
+    font-size: 0.9rem;
+    color: var(--texto-principal);
+}

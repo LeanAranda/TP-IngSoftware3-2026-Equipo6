@@ -1,0 +1,8 @@
+.recharts-legend-wrapper {
+    font-size: 12px;
+    font-family: inherit;
+}
+
+.recharts-legend-item-text {
+    color: var(--texto-secundario) !important;
+}

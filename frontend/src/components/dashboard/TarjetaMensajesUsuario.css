@@ -1,0 +1,5 @@
+.eje-x-usuarios text,
+.eje-y-usuarios text {
+    font-size: 12px;
+    fill: var(--texto-claro);
+}

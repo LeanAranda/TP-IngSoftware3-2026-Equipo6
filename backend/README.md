@@ -4,21 +4,44 @@ La lógica de procesamiento de datos con Python (FastAPI y Pandas) ya se encuent
 
 ## Pasos para inicializar el entorno
 
-### 1. Instalar dependencias
+### 1. Crear y activar el entorno virtual
+Abre una terminal en la raíz del proyecto y ejecuta según tu sistema operativo:
+
+**En Windows (PowerShell):**
+```powershell
+python -m venv .venv --clear
+.\.venv\Scripts\Activate.ps1
+```
+> 💡 *Si PowerShell arroja un error de políticas, ejecuta primero:* `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned`
+
+**En Mac / Linux:**
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+**En Windows (Git Bash):**
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+```
+
+### 2. Instalar dependencias
 Abre una terminal en la carpeta donde se encuentran `main.py` y `requirements.txt` y ejecuta:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Encender el servidor
+### 3. Encender el servidor
 Una vez instalado todo, levanta el motor de la API con el siguiente comando:
 
 ```bash
 uvicorn main:app --reload
+o
+python -m uvicorn main:app --reload
 ```
 > ⚠️ **Importante:** No cierres esta terminal mientras estés trabajando en React, de lo contrario el backend se apagará y el frontend no podrá consultar los datos.
 
-### 3. Probar la API (Swagger UI)
+### 4. Probar la API (Swagger UI)
 Con el servidor encendido, ingresa desde tu navegador a la documentación interactiva:
 🔗 http://127.0.0.1:8000/docs
 
